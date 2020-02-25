@@ -61,7 +61,7 @@
         </li> -->
       </ul>
       <form class="form-inline my-2 my-lg-0" action="/SocialMediaPhpProject/authenticator.php" method="post">
-        <button class="btn btn-outline-success my-2 my-sm-0" name="logout" type="submit">Logout</button>
+        <button class="btn btn-outline-danger my-2 my-sm-0" name="logout" type="submit">Logout</button>
       </form>
     </div>
   </nav>
@@ -87,9 +87,9 @@
             <input type="text" name="postbody" value='<?php echo($row["body"]);?>' style="margin-bottom:19px; width:800px;"> 
             <br>
             <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
-            <button type="submit" name="ok">OK</button>
-            <button type="submit" name="delete">Delete</button>
-            <button type="submit" name="comment">Comment</button>
+            <button type="submit" name="ok" class="btn btn-success">OK</button>
+            <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
+            <button type="submit" name="comment" class="btn btn-success">Comment</button>
             </form>
           <?php }else if(isset($_GET["comment"])&&$_GET["postid"]==$row["id"]){ ?>
             <form action="postsController.php" method="post" enctype="multipart/form-data">
@@ -98,15 +98,15 @@
             <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
             <input type="text" name="commentbody" style="margin-bottom:19px; width:800px;"> 
             <input type="file" name="images">
-            <button type="submit" name="AddComment">AddComment</button>
+            <button type="submit" name="AddComment" class="btn btn-success">AddComment</button>
             </form>
           <?php }else{?>
             <form action="postsController.php" method="post">
             <p> <?php echo($row["body"]); ?></p>
             <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
-            <button type="submit" name="edit">Edit</button>
-            <button type="submit" name="delete">Delete</button>
-            <button type="submit" name="comment">Comment</button>
+            <button type="submit" name="edit" class="btn btn-success">Edit</button>
+            <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
+            <button type="submit" name="comment" class="btn btn-success">Comment</button>
             </form>
           <?php }?>
           <?php while($row2 = $result2 -> fetch_assoc()){?>
@@ -114,8 +114,8 @@
               <div style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightyellow;">
               <p> <?php echo($row2["body"]); ?></p>
               <?php if($row2["user_id"]==$_SESSION["id"]){?>
-                <button type="submit" name="editComment">Edit Comment</button>
-                <button type="submit" name="deleteComment">Delete Comment</button>
+                <button type="submit" name="editComment" class="btn btn-success">Edit Comment</button>
+                <button type="submit" name="deleteComment" class="btn btn-secondary">Delete Comment</button>
               <?php }?>
               </div>
             </form>

@@ -29,10 +29,10 @@ if(!isset($_SESSION['logged'])){
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="profile.php?UserName=<?php echo($_SESSION['UserName']."&id=".$_SESSION['id']); ?>">Welcome <span id="myname"><?php echo($_GET["UserName"]); ?></span></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    </button> -->
+    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
       <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="navbar-brand" href="timeline.php?UserName=<?php echo($_SESSION['UserName']."&id=".$_SESSION['id']); ?>"> TimeLine</a></li>
         <!-- <li class="nav-item dropdown">
@@ -62,7 +62,7 @@ if(!isset($_SESSION['logged'])){
         </li> -->
       </ul>
       <form class="form-inline my-2 my-lg-0" action="/SocialMediaPhpProject/authenticator.php" method="post">
-        <button class="btn btn-outline-success my-2 my-sm-0" name="logout" type="submit">Logout</button>
+        <button class="btn btn-outline-danger my-2 my-sm-0" name="logout" type="submit">Logout</button>
       </form>
     </div>
   </nav>
@@ -88,9 +88,9 @@ if(!isset($_SESSION['logged'])){
             <input type="text" name="postbody" value='<?php echo($row["body"]);?>' style="margin-bottom:19px; width:800px;"> 
             <br>
             <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
-            <button type="submit" name="ok">OK</button>
-            <button type="submit" name="delete">Delete</button>
-            <button type="submit" name="comment">Comment</button>
+            <button type="submit" name="ok" class="btn btn-success">OK</button>
+            <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
+            <button type="submit" name="comment" class="btn btn-success">Comment</button>
             </form>
         <?php }else if(isset($_GET["comment"])&&$_GET["postid"]==$row["id"]){ ?>
         <form action="postsController.php" method="post" enctype="multipart/form-data">
@@ -99,17 +99,17 @@ if(!isset($_SESSION['logged'])){
         <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
         <input type="text" name="commentbody" style="margin-bottom:19px; width:800px;"> 
         <input type="file" name="images">
-        <button type="submit" name="AddComment">AddComment</button>
+        <button type="submit" name="AddComment" class="btn btn-success">AddComment</button>
         </form>
         <?php }else{?>
           <form action="postsController.php" method="post">
           <p> <?php echo($row["body"]); ?></p>
           <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
           <?php if($row["user_id"]==$_SESSION['id']){?>
-              <button type="submit" name="edit">Edit</button>
-              <button type="submit" name="delete">Delete</button>
+              <button type="submit" name="edit" class="btn btn-success">Edit</button>
+              <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
         <?php }?>
-              <button type="submit" name="comment">Comment</button>
+              <button type="submit" name="comment" class="btn btn-success">Comment</button>
           </form>
           <?php }?>
           <?php while($row2 = $result2 -> fetch_assoc()){?>
@@ -119,7 +119,7 @@ if(!isset($_SESSION['logged'])){
                 <input type="text" name="commentbody" value='<?php echo($row2["body"]);?>' style="margin-bottom:19px; width:800px;"> 
                 <br>
                 <input hidden readonly type="text" value=<?php echo($row2["id"]); ?> name="commentid">
-                <button type="submit" name="confirmEdit">Confirm Edit</button>
+                <button type="submit" name="confirmEdit" class="btn btn-success">Confirm Edit</button>
               </div>
             </form>
             <?php }else{ ?>
@@ -128,8 +128,8 @@ if(!isset($_SESSION['logged'])){
               <p> <?php echo($row2["body"]); ?></p>
               <input type="text" hidden readonly value="<?php echo $row2["id"] ?>" id="commentid" name="commentid" class="form-control">
               <?php if($row2["user_id"]==$_SESSION["id"]){?>
-                <button type="submit" name="editComment">Edit Comment</button>
-                <button type="submit" name="deleteComment">Delete Comment</button>
+                <button type="submit" name="editComment" class="btn btn-success">Edit Comment</button>
+                <button type="submit" name="deleteComment" class="btn btn-secondary">Delete Comment</button>
               <?php }?>
               <?php }?>
             </form>
