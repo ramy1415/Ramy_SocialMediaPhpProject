@@ -1,21 +1,24 @@
 <?php
-    session_start();
-    if(!isset($_SESSION['logged'])){
-      header("Location:/SocialMediaPhpProject/Login.php");
-    }
+session_start();
+if(!isset($_SESSION['logged'])){
+  header("Location:/SocialMediaPhpProject/Login.php");
+}
     $mysqli = new mysqli("localhost","root","","socialmedia"); 
     if ($mysqli -> connect_errno) {
       echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
       exit(); 
     }
+    if(isset($_POST["delete"])){
+      $sql = "DELETE FROM posts WHERE id={$_POST["postid"]}";
+      $mysqli -> query($sql);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Page</title>
+  <title>TimeLine Page</title>
   <style>
     html,
     body {
@@ -31,9 +34,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-        <a class="navbar-brand" href="timeline.php?UserName=<?php echo($_SESSION['UserName']."&id=".$_SESSION['id']); ?>"> TimeLine</a>
-        </li>
+      <li class="nav-item"><a class="navbar-brand" href="timeline.php?UserName=<?php echo($_SESSION['UserName']."&id=".$_SESSION['id']); ?>"> TimeLine</a></li>
         <!-- <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Events Options
@@ -71,18 +72,18 @@
         <div class="form-group">
           <label for="article">New Post</label>
           <input type="text" id="article" name="article" class="form-control">
-          <input type="text" hidden readonly value="<?php echo $_SESSION['id'] ?>" id="userid" name="userid" class="form-control">
           <input type="file" name="image">
+          <input type="text" hidden readonly value="<?php echo $_GET["id"] ?>" id="userid" name="userid" class="form-control">
         </div>
         <button name="publish" type="submit" class="btn btn-primary">Post</button>
     </form>  
     </div>
     <?php
-      $sql="SELECT * FROM posts WHERE user_id='{$_GET["id"]}'";
+      $sql="SELECT * FROM posts";
       $result = $mysqli -> query($sql);
-      while($row = $result -> fetch_assoc()){ $sql2="SELECT * FROM comments WHERE post_id={$row["id"]}"; $result2 = $mysqli -> query($sql2);?>
-        <div class="row col-12" style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightgray;">
-          <?php if(isset($_GET["edit"])&&$_GET["postid"]==$row["id"]&&$_SESSION["id"]==$row["user_id"]){ ?>
+      while($row = $result -> fetch_assoc()){$sql2="SELECT * FROM comments WHERE post_id={$row["id"]}"; $result2 = $mysqli -> query($sql2);?>
+        <div class="row" style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightgray;">
+        <?php if(isset($_GET["edit"])&&$_GET["postid"]==$row["id"]&&$_SESSION["id"]==$row["user_id"]){ ?>
             <form action="postsController.php" method="post">
             <input type="text" name="postbody" value='<?php echo($row["body"]);?>' style="margin-bottom:19px; width:800px;"> 
             <br>
@@ -91,34 +92,48 @@
             <button type="submit" name="delete">Delete</button>
             <button type="submit" name="comment">Comment</button>
             </form>
-          <?php }else if(isset($_GET["comment"])&&$_GET["postid"]==$row["id"]){ ?>
-            <form action="postsController.php" method="post" enctype="multipart/form-data">
-            <p> <?php echo($row["body"]); ?></p>
-            <br>
-            <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
-            <input type="text" name="commentbody" style="margin-bottom:19px; width:800px;"> 
-            <input type="file" name="images">
-            <button type="submit" name="AddComment">AddComment</button>
-            </form>
-          <?php }else{?>
-            <form action="postsController.php" method="post">
-            <p> <?php echo($row["body"]); ?></p>
-            <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
-            <button type="submit" name="edit">Edit</button>
-            <button type="submit" name="delete">Delete</button>
-            <button type="submit" name="comment">Comment</button>
-            </form>
+        <?php }else if(isset($_GET["comment"])&&$_GET["postid"]==$row["id"]){ ?>
+        <form action="postsController.php" method="post" enctype="multipart/form-data">
+        <p> <?php echo($row["body"]); ?></p>
+        <br>
+        <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
+        <input type="text" name="commentbody" style="margin-bottom:19px; width:800px;"> 
+        <input type="file" name="images">
+        <button type="submit" name="AddComment">AddComment</button>
+        </form>
+        <?php }else{?>
+          <form action="postsController.php" method="post">
+          <p> <?php echo($row["body"]); ?></p>
+          <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
+          <?php if($row["user_id"]==$_SESSION['id']){?>
+              <button type="submit" name="edit">Edit</button>
+              <button type="submit" name="delete">Delete</button>
+        <?php }?>
+              <button type="submit" name="comment">Comment</button>
+          </form>
           <?php }?>
           <?php while($row2 = $result2 -> fetch_assoc()){?>
+            <?php if(isset($_GET["edit"])&&$_GET["commentid"]==$row2["id"]&&$_SESSION["id"]==$row2["user_id"]){ ?>
+            <form action="postsController.php" method="post">
+              <div  style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightyellow;">
+                <input type="text" name="commentbody" value='<?php echo($row2["body"]);?>' style="margin-bottom:19px; width:800px;"> 
+                <br>
+                <input hidden readonly type="text" value=<?php echo($row2["id"]); ?> name="commentid">
+                <button type="submit" name="confirmEdit">Confirm Edit</button>
+              </div>
+            </form>
+            <?php }else{ ?>
             <form class="col-12" action="postsController.php" method="post">
-              <div style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightyellow;">
+              <div  style="border: 1px black solid;padding:18px;margin-top:30px;border-radius:20px;background-color:lightyellow;">
               <p> <?php echo($row2["body"]); ?></p>
+              <input type="text" hidden readonly value="<?php echo $row2["id"] ?>" id="commentid" name="commentid" class="form-control">
               <?php if($row2["user_id"]==$_SESSION["id"]){?>
                 <button type="submit" name="editComment">Edit Comment</button>
                 <button type="submit" name="deleteComment">Delete Comment</button>
               <?php }?>
-              </div>
+              <?php }?>
             </form>
+            </div>
           <?php }?>
         </div>
       <?php }?>

@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $mysqli = new mysqli("localhost","root","","socialmedia");
 
     if ($mysqli -> connect_errno) {
@@ -27,9 +28,17 @@
         $result = $mysqli -> query($sql);
         $row = $result -> fetch_assoc();
         if(isset($row["UserName"])){
-            header("Location:user/profile.php?UserName=".$row["UserName"]."&id=".$row["id"]);
+            session_start();
+            $_SESSION['UserName']=$row["UserName"];
+            $_SESSION['id']=$row["id"];
+            $_SESSION['logged']=true;
+            header("Location:user/profile.php?UserName=".$_SESSION['UserName']."&id=".$_SESSION['id']);
         }else{
             header("Location:login.php");
         }
         $result -> free_result();
+        }
+    if(isset($_POST['logout'])){
+        session_destroy();
+        header("Location:login.php");
         }
