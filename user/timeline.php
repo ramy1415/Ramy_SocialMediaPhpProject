@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION['logged'])){
-  header("Location:/SocialMediaPhpProject/Login.php");
+  header("Location:/Ramy_SocialMediaPhpProject/Login.php");
 }
     $mysqli = new mysqli("localhost","root","","socialmedia"); 
     if ($mysqli -> connect_errno) {
@@ -33,7 +33,7 @@ if(!isset($_SESSION['logged'])){
       <li class="nav-item"><a class="navbar-brand"
           href="timeline.php"> TimeLine</a></li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="/SocialMediaPhpProject/authenticator.php" method="post">
+    <form class="form-inline my-2 my-lg-0" action="/Ramy_SocialMediaPhpProject/authenticator.php" method="post">
       <button class="btn btn-danger my-2 my-sm-0" name="logout" type="submit">Logout</button>
     </form>
     </div>

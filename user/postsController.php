@@ -1,7 +1,7 @@
 <?php
     session_start();
     if(!isset($_SESSION['logged'])){
-      header("Location:/SocialMediaPhpProject/Login.php");
+      header("Location:/Ramy_SocialMediaPhpProject/Login.php");
     }
     require('../models/post.php');
     require('../models/comment.php');

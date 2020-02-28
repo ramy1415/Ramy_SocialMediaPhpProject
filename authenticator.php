@@ -1,5 +1,8 @@
 <?php
     session_start();
+    if(!isset($_SESSION['logged'])){
+    header("Location:/Ramy_SocialMediaPhpProject/Login.php");
+    }
     $mysqli = new mysqli("localhost","root","","socialmedia");
 
     if ($mysqli -> connect_errno) {
