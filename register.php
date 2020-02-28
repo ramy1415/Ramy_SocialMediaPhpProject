@@ -19,10 +19,11 @@ if(isset($_GET["errors"]))
 <body>
   <div class="container h-100">
     <div class="row h-100 align-items-center">
-      <form class="col" action="authenticator.php" method="POST">
+      <form class="col" action="authenticator.php" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <label for="FirstName">First Name</label>
           <input type="text" id="FirstName" name="FirstName" class="form-control">
+          <small class="form-text text-muted">Only letters and white space allowed</small>
           <?php if(isset($_GET["errors"])) if(in_array("FirstName", $errors)) { ?>
             <small style="color: red">invalid FirstName</small>
           <?php } ?>
@@ -30,6 +31,7 @@ if(isset($_GET["errors"]))
         <div class="form-group">
           <label for="LastName">Last Name</label>
           <input type="text" id="LastName" name="LastName" class="form-control">
+          <small class="form-text text-muted">Only letters and white space allowed</small>
           <?php if(isset($_GET["errors"])) if(in_array("LastName", $errors)) { ?>
             <small style="color: red">invalid LastName</small>
           <?php } ?>
@@ -37,6 +39,7 @@ if(isset($_GET["errors"]))
         <div class="form-group">
           <label for="UserName">User Name</label>
           <input type="text" id="UserName" name="UserName" class="form-control">
+          <small class="form-text text-muted">Only letters and white space allowed</small>
           <?php if(isset($_GET["errors"])) if(in_array("UserName", $errors)) { ?>
             <small style="color: red">invalid UserName</small>
           <?php } ?>
@@ -60,6 +63,12 @@ if(isset($_GET["errors"]))
           <input type="number"  name="Age" class="form-control" id="Age">
           <?php if(isset($_GET["errors"])) if(in_array("Age", $errors)) { ?>
             <small style="color: red">invalid Age</small>
+          <?php } ?>
+        <div class="form-group">
+          <label for="image">Image</label>
+          <input type="file" name="image" id="image">
+          <?php if(isset($_GET["errors"])) if(in_array("image", $errors)) { ?>
+            <small style="color: red">invalid image</small>
           <?php } ?>
         </div>
         <button name="register" type="submit" class="btn btn-primary">Register</button>
