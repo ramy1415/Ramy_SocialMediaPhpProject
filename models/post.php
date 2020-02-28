@@ -2,34 +2,54 @@
 
 
 class post{
-    public $body;
-    public $user_id;
-    public $image;
-    public $mysqli;
-    public function __construct()
+    public static function insert($body,$userid)
     {
-        $this->mysqli = new mysqli("localhost","root","","socialmedia"); 
-        if ($this->mysqli -> connect_errno) {
-        echo "Failed to connect to MySQL: " . $this->mysqli -> connect_error;
-        exit(); 
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
+        $allowed_image_extension = ["png","jpg","jpeg",""];
+        $path_parts = pathinfo("{$_FILES["image"]["name"]}");
+        if (!in_array($path_parts['extension'], $allowed_image_extension)) {
+            $sql = "INSERT INTO posts (body, user_id) VALUES ('{$body}',{$userid})";
+            $mysqli -> query($sql);
+            return;
         }
+        $upfile ='../files/images/'.$_FILES["image"]["name"];
+        if (is_uploaded_file($_FILES['image']['tmp_name'])) { 
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $upfile)) {
+          echo 'Problem: Could not move file to destination directory'; exit; }
+          $image=$_FILES["image"]["name"];
+          $sql = "INSERT INTO posts (body, user_id) VALUES ('{$body}' '<br>' '<img style=max-width:500px;max-height:500px; src=../files/images/{$image}>',{$userid})";
+          $mysqli -> query($sql);
+          }else{
+            $sql = "INSERT INTO posts (body, user_id) VALUES ('{$body}',{$userid})";
+            $mysqli -> query($sql);
+          }
+        
     }
-    public function insert($postbody)
+    public static function delete($postid)
     {
-        $sql = "INSERT INTO posts (body, user_id) VALUES ('{$postbody->body}',{$postbody->user_id})";
-        $this->mysqli -> query($sql);
-    }
-    public function insertwithimage($postbody)
-    {
-        $sql = "INSERT INTO posts (body, user_id) VALUES ('{$postbody->body}' '<br>' '<img src=../files/images/{$postbody->image} >'   ,{$postbody->user_id})";
-        $this->mysqli -> query($sql);
-    }
-    public function delete($postid)
-    {
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
         $sql = "DELETE FROM posts WHERE id={$postid}";
         $sql2 = "DELETE FROM comments WHERE post_id={$postid}";
-        $this->mysqli -> query($sql2);
-        $this->mysqli -> query($sql);
+        $mysqli -> query($sql2);
+        $mysqli -> query($sql);
+    }
+    public static function update($postid,$newbody)
+    {
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
+        $sql = "UPDATE posts SET body='{$newbody}' WHERE id={$postid}";
+        $mysqli -> query($sql);
     }
 
 }

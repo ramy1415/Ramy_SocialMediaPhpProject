@@ -69,8 +69,8 @@ if(!isset($_SESSION['logged'])){
           <br>
           <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
           <button type="submit" name="ok" class="btn btn-success">OK</button>
-          <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
-          <button type="submit" name="comment" class="btn btn-success">Comment</button>
+          <button type="submit" name="delete" class="btn btn-secondary">Delete Post</button>
+          <button type="submit" name="comment" class="btn btn-success">Comment On Post</button>
         </form>
         <?php }else if(isset($_GET["comment"])&&$_GET["postid"]==$row["id"]){ ?>
         <form action="postsController.php" method="post" enctype="multipart/form-data">
@@ -79,17 +79,17 @@ if(!isset($_SESSION['logged'])){
           <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
           <input type="text" name="commentbody" style="margin-bottom:19px; width:800px;">
           <input type="file" name="images">
-          <button type="submit" name="AddComment" class="btn btn-success">AddComment</button>
+          <button type="submit" name="AddComment" class="btn btn-success">Confirm</button>
         </form>
         <?php }else{?>
         <form action="postsController.php" method="post">
           <p> <?php echo($row["body"]); ?></p>
           <input hidden readonly type="text" value=<?php echo($row["id"]); ?> name="postid" id="postid">
           <?php if($row["user_id"]==$_SESSION['id']){?>
-          <button type="submit" name="edit" class="btn btn-success">Edit</button>
-          <button type="submit" name="delete" class="btn btn-secondary">Delete</button>
+          <button type="submit" name="edit" class="btn btn-success">Edit Post</button>
+          <button type="submit" name="delete" class="btn btn-secondary">Delete Post</button>
           <?php }?>
-          <button type="submit" name="comment" class="btn btn-success">Comment</button>
+          <button type="submit" name="comment" class="btn btn-success">Comment on Post</button>
         </form>
         <?php }?>
         <?php while($row2 = $result2 -> fetch_assoc()){?>

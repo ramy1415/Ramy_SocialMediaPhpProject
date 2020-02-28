@@ -60,13 +60,15 @@ if(isset($_GET["errors"]))
         </div>
         <div class="form-group">
           <label for="Age">Age</label>
-          <input type="number"  name="Age" class="form-control" id="Age">
+          <input type="number" max="60" min="18" name="Age" class="form-control" id="Age">
           <?php if(isset($_GET["errors"])) if(in_array("Age", $errors)) { ?>
             <small style="color: red">invalid Age</small>
           <?php } ?>
-        <div class="form-group">
-          <label for="image">Image</label>
+        <div class="form-group" style="margin-top:15px;">
+          <label for="image">Profile Pic</label>
+          <br>
           <input type="file" name="image" id="image">
+          <small class="form-text text-muted">Will set to an anonymous image if not chosen</small>
           <?php if(isset($_GET["errors"])) if(in_array("image", $errors)) { ?>
             <small style="color: red">invalid image</small>
           <?php } ?>

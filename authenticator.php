@@ -6,6 +6,9 @@
         echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
         exit();
     }
+    $allowed_image_extension = ["png","jpg","jpeg",""];
+    $path_parts = pathinfo("{$_FILES["image"]["name"]}");
+    
     if(isset($_POST['register'])){
         $errors=[];
         foreach ($_POST as $key=>$val){
@@ -13,7 +16,7 @@
                 array_push($errors,$key);
             }
         }
-        if($_FILES["image"]["name"]==""){
+        if (!in_array($path_parts['extension'], $allowed_image_extension)) {
             array_push($errors,"image");
         }
         if (!filter_var($_POST["Email"], FILTER_VALIDATE_EMAIL)) {
@@ -29,7 +32,6 @@
             array_push($errors,"LastName");
         }
         if(empty($errors)){
-            $path_parts = pathinfo("{$_FILES["image"]["name"]}");
             $_FILES["image"]["name"]="avatar"."-{$_POST["UserName"]}".".{$path_parts['extension']}";
             $upfile ='files/images/'.$_FILES["image"]["name"];
             if (is_uploaded_file($_FILES['image']['tmp_name'])) { 
@@ -39,6 +41,10 @@
                 $mysqli -> query($sql);
                 header("Location:login.php");
             }
+            }else{
+                $sql = "INSERT INTO users (FirstName, LastName, UserName, Password, Email, Age,pic) VALUES ('{$_POST["FirstName"]}','{$_POST["LastName"]}','{$_POST["UserName"]}','{$_POST["Password"]}','{$_POST["Email"]}',{$_POST["Age"]},'anon.png')";
+                $mysqli -> query($sql);
+                header("Location:login.php");
             }
         }else{
             header("Location:register.php?errors=".implode(";",$errors));

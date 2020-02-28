@@ -1,33 +1,52 @@
 <?php
 
 class comment{
-    public $body;
-    public $user_id;
-    public $user_Name;
-    public $image;
-    public $mysqli;
-    public function __construct()
+    public static function insert($body,$commentorid,$postid)
     {
-        $this->mysqli = new mysqli("localhost","root","","socialmedia"); 
-        if ($this->mysqli -> connect_errno) {
-        echo "Failed to connect to MySQL: " . $this->mysqli -> connect_error;
-        exit(); 
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
+        $allowed_image_extension = ["png","jpg","jpeg",""];
+        $path_parts = pathinfo("{$_FILES["images"]["name"]}");
+        if (!in_array($path_parts['extension'], $allowed_image_extension)) {
+            $sql = "INSERT INTO comments (body, user_id,post_id) VALUES ('{$_POST["commentbody"]}',{$_SESSION["id"]},{$_POST["postid"]})";
+            $mysqli -> query($sql);
+            return;
         }
+        if(!empty($_POST["commentbody"])){
+            $upfile ='../files/images/'.$_FILES["images"]["name"];
+            if (is_uploaded_file($_FILES['images']['tmp_name'])) { 
+            if (!move_uploaded_file($_FILES['images']['tmp_name'], $upfile)) {
+              echo 'Problem: Could not move file to destination directory'; exit; }
+              $sql = "INSERT INTO comments (body, user_id,post_id) VALUES ('{$_POST["commentbody"]}' '<br>' '<img style=max-width:500px;max-height:500px; src=../files/images/{$_FILES["images"]["name"]} >'   ,{$_SESSION["id"]},{$_POST["postid"]})";
+              $mysqli -> query($sql);
+              }else{
+                $sql = "INSERT INTO comments (body, user_id,post_id) VALUES ('{$_POST["commentbody"]}',{$_SESSION["id"]},{$_POST["postid"]})";
+                $mysqli -> query($sql);
+              }
+            }
     }
-    public function insert($commentbody)
+    public static function delete($commentid)
     {
-        $sql = "INSERT INTO posts (body, user_id) VALUES ('{$commentbody->body}',{$commentbody->user_id})";
-        $this->mysqli -> query($sql);
-    }
-    public function insertwithimage($commentbody)
-    {
-        $sql = "INSERT INTO posts (body, user_id) VALUES ('{$commentbody->body}' '<br>' '<img src=../files/images/{$commentbody->image} >'   ,{$commentbody->user_id})";
-        $this->mysqli -> query($sql);
-    }
-    public function delete($commentid)
-    {
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
         $sql = "DELETE FROM comments WHERE id={$commentid}";
-        $this->mysqli -> query($sql);
+        $mysqli -> query($sql);
+    }
+    public static function update($commentid,$newbody)
+    {
+        $mysqli=new mysqli("localhost","root","","socialmedia"); 
+        if ($mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+            exit(); 
+        };
+        $sql = "UPDATE comments SET body='{$newbody}' WHERE id={$commentid}";
+        $mysqli -> query($sql);
     }
 
 }
